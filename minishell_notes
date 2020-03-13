@@ -1,0 +1,97 @@
+Metacaracteres = | & ; ( ) < > space tab : doivent être quoted pour être écrits pour eux memes
+Operateur de controle : || & && ; ;; ( ) | \n
+
+Commande simple =
+- Optional assignments ?
+- Mots séparés par des espaces (1er = commande = argument 0)
+- Redirections
+- Operateur de controle (\n, ;, …)
+Retour = exit status ou 128 + signal.
+
+Command | command2 | command3…
+Standard output -> standard input
+Redirections seulement à la fin.
+Chaque commande dans un sous-shell sépare.
+
+Liste de commandes :
+Separateurs : ; & && || (\n)
+Terminee par : ; & \n
+
+Commande composée :
+(Liste) : exécutée dans un sous shell
+{Liste;} : groupe de commande (rien de special)
+((Expression)) = let expression = evaluation arithmetique
+[[expression]] : retourne 0 ou 1, utilise dans if
+
+Mecanismes de quote : ‘, “ ou \
+\ preserve la valeur littérale du prochain caractère, sauf pour \n : \\n continue la ligne.
+Une ‘ ne peut pas être escaped a l’interieur d’autres ‘.
+“ preserve toutes les valeurs littérales sauf $, ` (apostrophe a l’envers) et \ (qui retient son sens special s’il est suivi de : $, ` , “, \ ou \n). Une “ peut être escaped dans des “.
+L'étoile et @ ont un sens special entre ".
+Dans un $'string', les escape sont interprétés (exemple = \a fait du son, \n = newline).
+
++= dans export ?
+
+$? = Status of the most recently executed foreground pipeline.
+
+Quelques shell variables utiles :
+OLDPWD, mis a jour avec la commande cd
+PIPESTATUS = tableau contenant une liste des exit status des processus du dernier pipeline execute en foreground
+PPID = process ID du parent, readonly
+PWD, mis a jour avec la commande cd
+SHLVL, incréments de 1 a chaque fois qu'une instance de bash est démarrée
+HOME, utilisé comme argument par défaut pour cd et pour remplacer ~
+PATH : notamment, une chaine vide (toute seule ou entre deux :) = current directory. Le PATH par défaut depend du système.
+
+Command substitution : $(command) ou `command` : remplace par la sortie standard de la commande.
+
+Apres avoir split la commande en plusieurs mots, bash y cherche les caractères *, ? et [ et les interprète pour rechercher des fichiers avec des expressions régulières.
+
+REDIRECTION
+Avant d'executer la commande, le shell sait qu'il doit rediriger l'input ou l'output.
+Peut aussi être utilisé pour ouvrir/fermer des fichiers.
+Peut être n'importe où dans la commande.
+Sont interprétés de gauche à droite.
+< sans fd prend pour fd par défaut fd = 0.
+> sans fd prend pour fd par défaut fd = 1.
+Si l'argument après la redirection prend plusieurs mots, bash renvoie une erreur (un chemin n'a qu'un seul mot).
+
+&1 fait référence à la sortie standard. Exemple : ls 2>&1 redirige la sortie d'erreur vers la sortie standard.  ls > file 2>&1 redirige tout vers file.
+Il existe quelques chemins spéciaux de redirection (pour dupliquer des fd...).
+[n]<word : redirige la lecture de word vers le fichier n (ou vers l'entrée standard si n n'est pas spécifié).
+[n]>word : écrit depuis le fd n (ou la sortie standard par défaut) vers le fichier word. Crée le fichier word s'il n'existe pas, le tronque à taille zéro auparavant s'il existe.
+[n]>>word : Même chose mais si le fichier existe, append.
+
+&>word et >&word redirigent à la fois la sortie standard et la sortie d'erreur vers le même fichier word. Equivalent à >word 2>&1.
+
+Here-document :
+<<word here-document
+Lit l'input du here-document jusqu'à rencontrer le mot word et place en standard input. Voir plus de precisions dans man bash.
+Si here-document n'est pas précisé, prend le standard input.
+
+
+
+SIMPLE COMMAND EXPANSION
+1. Les assignements pre-commande et les redirections sont sauvegardés pour plus tard.
+2. Les autres arguments sont "expanded" (les ~ et $ sont remplacés, les quotes font leur job, etc.). S'il y a bien des arguments, le premier est pris comme le nom de la commande.
+3. Les redirections sont effectuées.
+4. Les assignements sont "expanded" et executés (seulement pour l'environnement de la commande exécutée).
+S'il n'y a pas de nom de commande, les assignements affectent le shell.
+S'il n'y a pas de nom de commande, les redirections sont effectuées mais n'affectent pas le shell.
+
+Méthode de recherche de la commande : 
+Pas de \ : Fonctions du shell > builtins > PATH.
+Si la commande n'est pas trouvée, le shell affiche un message d'erreur et retourne un exit status de 127.
+Avec \ : cherche que le chemin donné.
+Si l'execution fail, le shell assume que c'est un script et l'execute dans un sous shell.
+
+Pour tous les builtins, usage incorrect -> status exit = 2.
+
+Shell interactif :
+Le signal SIGTERM est ignoré.
+SIGINT est géré.
+Ignore SIGQUIT.
+If job control is in effect, bash ignores SIGTTIN, SIGTTOU et SIGTSTP.
+Le shell s'exit sur un SIGHUP.
+
+Man bash contient une bonne liste des builtins.
