@@ -1,0 +1,32 @@
+(Sujet non exact, c'est de souvenir)
+
+Dossier de rendu : cpp_module_01
+Fichiers : Warlock.cpp Warlock.hpp ASpell.cpp ASpell.hpp ATarget.cpp ATarget.hpp Dummy.cpp Dummy.hpp Fwoosh.cpp Fwoosh.hpp
+
+Utilisation des SWITCH interdite dans Warlock -> -42.
+
+Créer une classe abstraite ASpell. Elle a une string name et une string effects.
+Elle a deux getters getName et getEffects, qui renvoient une référence vers une string constante et doivent pouvoir être lancés sur un object constant.
+Elle a une fonction virtuelle pure clone(), qui est const et qui renvoie un pointeur sur ASpell.
+
+Créer une classe abstraite ATarget. Elle a une string type et son getter associé.
+Elle a, comme pour ASpell, une fonction virtuelle pure clone().
+
+Ajouter à ATarget la fonction getHitBySpell qui prend une référence constante vers un ASpell et qui affiche
+[TYPE] has been [EFFECTS]!
+où [TYPE] est le type du ATarget et [EFFECTS] est l'attribut effects du ASpell donné en paramètre.
+
+Puis, ajouter à ASpell une fonction launch qui prend une référence constante vers un ATarget et qui appelle simplement la fonction getHitBySpell du ATarget avec l'instance courante en paramètre.
+
+Ensuite, nous allons implémenter ces deux classes abstraites.
+
+Créer une implémentation Dummy de la classe abstraite. Il a pour type "Target Practice Dummy". Vous devrez bien sûr implémenter la fonction clone().
+
+Créer une implémentation Fwoosh de la classe ASpell. Il a pour nom "Fwoosh" et pour effet "fwooshed". Implémenter la fonction clone().
+
+Enfin, ajouter dans la classe Warlock les trois fonctions :
+- learnSpell : prend un pointeur sur ASpell ; le warlock apprend le spell
+- forgetSpell : prend une référence constante sur une string, et si le warlock connaît ce spell, il l'oublie ; sinon ne fait rien
+- launchSpell : prend une référence constante sur une string, si le warlock connaît le spell, il le lance, sinon ne fait rien
+
+Il faut donc un attribut supplémentaire dans Warlock pour stocker les spells. Plusieurs choix peuvent convenir, à vous de choisir.
