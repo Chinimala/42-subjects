@@ -1,0 +1,23 @@
+Dossier de rendu : cpp_module_00
+Fichiers : Warlock.cpp Warlock.hpp
+
+Créer une classe Warlock avec la forme coplienne.
+Elle a pour attributs :
+- une string name
+- une string title.
+Ces attributs étant privés, Warlock a également deux getters getName et getTitle qui renvoient une référence vers une string constante, et un setter setTitle qui prend en paramètre une référence vers une string constante.
+Les getters doivent pouvoir être appelés sur un objet constant.
+Le Warlock a un constructeur qui prend les références de deux string constantes, son nom et son titre.
+Le Warlock ne peut pas être construit sans paramètre, être instancié par copié ou être assigné par copie.
+Exemple :
+Warlock richard; < compile
+Warlock edward; < ne compile pas
+Warlock edward(richard); < ne compile pas
+edward = richard; < ne compile pas
+
+Lorsque le Warlock sera créé, il dira
+[NAME]: A boring day again!
+Lorsqu'il sera détruit, il dira
+[NAME]: My job is done here!
+Il aura également une fonction introduce() const qui lui fera dire :
+[NAME]: I am [NAME], [TITLE]!
